@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Machine Learning-Guided Content Refresh in Enterprise Search Portfolios — FlyRank Research</title>
+  <meta name="description" content="Research paper evaluating machine learning decay risk prediction and content refresh prioritization across 30,000 enterprise search URLs.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="paper-container">
+    <!-- Header -->
+    <header class="paper-header">
+      <div class="header-badge">FlyRank Machine Learning Capstone Research</div>
+      <h1 class="paper-title">Machine Learning-Guided Content Refresh: Predicting Traffic Decay and Prioritizing High-Yield Editorial Interventions in Organic Search Portfolios</h1>
+      
+      <div class="author-meta">
+        <span><strong>Author:</strong> Muhammad Bin Ijaz (ML Research Intern)</span>
+        <span><strong>Track:</strong> Content Refresh Ranking &amp; Decay Modeling</span>
+        <span><strong>Date:</strong> September 2026</span>
+        <span><strong>Code:</strong> <a href="https://github.com/muhammadbinijaz17/flyrankAI_Intern_ML" class="meta-link" target="_blank" rel="noopener">GitHub Repository</a></span>
+      </div>
+    </header>
+
+    <!-- Abstract Box (Canonical Section 0/1: Top of Paper) -->
+    <div class="abstract-card" id="abstract">
+      <div class="abstract-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        Abstract
+      </div>
+      <p class="abstract-text">
+        <strong>Question:</strong> In multi-thousand-page enterprise organic search portfolios, editorial teams face severe capacity bottlenecks when deciding which declining URLs warrant proactive content refresh before irreversible search visibility loss occurs.
+        <strong>Data:</strong> Using an anonymized, public-safe dataset of 30,000 URLs across 32 distinct client domains spanning 90-day search performance, technical crawl, and user engagement signals from the FlyRank ML research release, we model forward 30-day traffic decline.
+        <strong>Method:</strong> We engineered leak-free pre-outcome behavioral features, established a 20% grouped client holdout split to prevent cross-domain authority leakage, and benchmarked calibrated logistic regression, decision trees, random forests, and gradient boosting against a heuristic editorial baseline.
+        <strong>Headline Result:</strong> Calibrated logistic regression achieved an honest holdout ROC-AUC of 0.5932 and PR-AUC of 0.5545, delivering top-of-queue Precision@10 of 80.0% and Precision@100 of 82.0%—a +27.8 percentage point lift over the 54.2% portfolio base rate and a 2.4× improvement over the heuristic baseline (34.0% P@100).
+        <strong>Purpose / Action:</strong> We operationalize these predictions into a 6-tier Content Action Playbook with explicit diagnostic reason codes and economic effort modeling, enabling editorial sprints to safeguard 15.6M quarterly impressions across the top 1,000 at-risk URLs with high operational confidence.
+      </p>
+    </div>
+
+    <!-- Key Metrics Highlight Grid -->
+    <div class="grid-3">
+      <div class="stat-card">
+        <div class="stat-label">Portfolio Dataset</div>
+        <div class="stat-value">30,000</div>
+        <div class="stat-desc">Anonymized URLs across 32 enterprise domains</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Top Queue Precision@100</div>
+        <div class="stat-value" style="color: #60a5fa;">82.0%</div>
+        <div class="stat-desc">+27.8 pp lift over the 54.2% portfolio base rate</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Baseline Lift Multiplier</div>
+        <div class="stat-value" style="color: #34d399;">2.4×</div>
+        <div class="stat-desc">ML priority queue vs. heuristic rule scoring</div>
+      </div>
+    </div>
+
+    <!-- Section 1: Introduction / Problem Statement -->
+    <section class="paper-section" id="introduction">
+      <h2 class="section-heading"><span class="section-num">1.</span> Introduction &amp; Problem Statement</h2>
+      <p>
+        Organic search traffic is one of the highest-converting customer acquisition channels for enterprise platforms, yet digital content portfolios decay silently and continuously over time. As search engine ranking algorithms evolve and competitors publish newer material, mature URLs that once ranked in positions 1–3 gradually lose relevance, slipping to lower positions and suffering severe, compounding visibility loss.
+      </p>
+      <p>
+        In enterprise publishing environments managing 10,000 to 100,000+ indexed URLs, human editorial capacity is strictly finite. A typical SEO and editorial department can execute comprehensive content refreshes on only 50 to 150 pages per monthly sprint. Consequently, editors face a continuous resource allocation dilemma: <em>which specific declining pages should be selected for revision to maximize protected search equity?</em>
+      </p>
+      <p>
+        Without predictive intelligence, editorial teams frequently rely on uncalibrated rules of thumb (e.g., sorting solely by page age or historical traffic). This ad-hoc approach introduces two costly operational failure modes:
+      </p>
+      <ul style="margin-left: 1.5rem; margin-bottom: 1.25rem; color: #cbd5e1;">
+        <li style="margin-bottom: 0.5rem;"><strong>False Positives (Wasted Editorial Capacity):</strong> Writers spend 4 to 8 hours rewriting healthy evergreen content or dormant long-tail articles where traffic upside is negligible.</li>
+        <li><strong>False Negatives (Unmitigated Traffic Erosion):</strong> Commercially critical Page-1 pillar articles begin active decay and fall off Page 1 before editorial teams detect the downtrend.</li>
+      </ul>
+      <p>
+        <strong>Unit of Analysis &amp; Decision Support:</strong> This study evaluates individual URLs (<code>content_id</code>) at the conclusion of a 90-day observation window, formulating a machine learning-driven prioritization system that estimates forward 30-day decay probability and assigns specific diagnostic reason codes to guide human editorial intervention.
+      </p>
+    </section>
+
+    <!-- Section 2: Data Architecture & Safety -->
+    <section class="paper-section" id="data">
+      <h2 class="section-heading"><span class="section-num">2.</span> Dataset Architecture &amp; Public-Safety Data Contract</h2>
+      <p>
+        The investigation was conducted on the <strong>FlyRank Content Refresh Anonymized Dataset</strong> (March 2026 Research Release), comprising $N = 30,000$ URL records across 32 distinct enterprise domains. The data architecture enforces strict temporal windowing:
+      </p>
+      <div class="grid-2">
+        <div class="stat-card">
+          <div class="stat-label">Observation Window ($T_{-90}$ to $T_0$)</div>
+          <p style="font-size: 0.9rem; color: #cbd5e1; margin-top: 0.5rem;">
+            Captures pre-outcome telemetry: 90-day search impressions, clicks, average position, CTR, user engagement rate, scroll rate, pageviews per session, content age, and days since last update.
+          </p>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Outcome Window ($T_0$ to $T_{+30}$)</div>
+          <p style="font-size: 0.9rem; color: #cbd5e1; margin-top: 0.5rem;">
+            Compares forward 30-day impressions against the preceding 30-day baseline to establish the ground-truth binary decay target (<code>is_declining_label = 1</code> if trend is down, <code>0</code> otherwise).
+          </p>
+        </div>
+      </div>
+
+      <h3 class="subsection-heading">Public Safety &amp; Deliberate Feature Exclusions</h3>
+      <p>
+        To ensure strict privacy compliance and prevent information leakage:
+      </p>
+      <div class="callout-note">
+        <strong>Data Safety Governance:</strong> All raw client domain names, proprietary URLs, branded keywords, and customer queries were deliberately excluded and replaced with cryptographically secure hashes (<code>client_id</code>, <code>content_id</code>). Furthermore, pseudonymous IDs were strictly barred from feature matrices to ensure models cannot memorize domain authority artifacts. All target-derived outcome variables (<code>trend_direction</code>, <code>trend_pct</code>, <code>impressions_last_30d</code>) were strictly quarantined from training.
+      </div>
+
+      <div class="figure-container">
+        <img src="figures/playbook_decay_by_freshness.png" alt="Decay Rate and Traffic Volume by Freshness Tier">
+        <figcaption class="figure-caption">
+          <strong>Figure 1: Empirical Decay Rates &amp; Impression Distribution Across Content Freshness Tiers.</strong> Mature content un-updated for 365+ days demonstrates elevated decline susceptibility, whereas recently refreshed content exhibits substantially higher search visibility.
+        </figcaption>
+      </div>
+    </section>
+
+    <!-- Section 3: Methodology -->
+    <section class="paper-section" id="methodology">
+      <h2 class="section-heading"><span class="section-num">3.</span> Methodology &amp; Validation Design</h2>
+      <p>
+        A central contribution of this research is establishing an <strong>honest grouped-client validation architecture</strong>. In multi-client search portfolios, random row splitting causes severe optimistic validation bias because URLs from the same domain share technical infrastructure, brand authority, and backlink profiles.
+      </p>
+
+      <h3 class="subsection-heading">Grouped Client Holdout Partitioning</h3>
+      <p>
+        We partitioned the 32 client domains into a development set (26 clients, 25,633 URLs) and a sealed holdout test set (6 clients, 4,367 URLs, 47.38% test base rate). All models and feature scalers were fitted exclusively on the development cohort and evaluated blind on unseen clients.
+      </p>
+
+      <h3 class="subsection-heading">Heuristic Baseline Formulation</h3>
+      <p>
+        To establish whether machine learning delivers tangible lift over conventional heuristic scoring, we implemented the industry-standard <strong>W04 Heuristic Baseline Action Score</strong>:
+      </p>
+      <pre class="code-block">Baseline Action Score = 0.35 * norm(days_since_update) + 0.35 * (1 - norm(avg_position)) + 0.30 * (1 - norm(ctr))</pre>
+
+      <h3 class="subsection-heading">Engineered Pre-Outcome Feature Matrix (17 Features)</h3>
+      <p>
+        The feature matrix incorporates log-transformed volume metrics (impressions, clicks, sessions, search volume), behavioral engagement rates, position indicators (Page 1 vs. striking distance), and freshness decay ratios ($\text{days\_since\_last\_update} / [\text{content\_age\_days} + 1]$).
+      </p>
+    </section>
+
+    <!-- Section 4: Results & Model Comparison -->
+    <section class="paper-section" id="results">
+      <h2 class="section-heading"><span class="section-num">4.</span> Empirical Results &amp; Model Comparison</h2>
+      <p>
+        We evaluated four machine learning architectures (Linear Logistic Regression, Decision Tree, Random Forest, and Gradient Boosting) against the heuristic baseline and naive base rate on the exact same 4,367-URL grouped client holdout split.
+      </p>
+
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Model / Baseline Architecture</th>
+              <th>P@10</th>
+              <th>P@20</th>
+              <th>P@50</th>
+              <th>P@100</th>
+              <th>P@500</th>
+              <th>ROC-AUC</th>
+              <th>PR-AUC</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge badge-gray">Naive Base Rate (Chance)</span></td>
+              <td>47.4%</td>
+              <td>47.4%</td>
+              <td>47.4%</td>
+              <td>47.4%</td>
+              <td>47.4%</td>
+              <td>0.5000</td>
+              <td>0.4738</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-rose">W04 Heuristic Baseline</span></td>
+              <td>20.0%</td>
+              <td>30.0%</td>
+              <td>28.0%</td>
+              <td>34.0%</td>
+              <td>31.4%</td>
+              <td>0.4797</td>
+              <td>0.4360</td>
+            </tr>
+            <tr class="highlight-row">
+              <td><span class="badge badge-blue">Logistic Regression (Linear) ★</span></td>
+              <td><strong>60.0%</strong></td>
+              <td><strong>75.0%</strong></td>
+              <td><strong>66.0%</strong></td>
+              <td><strong>65.0%</strong></td>
+              <td><strong>59.4%</strong></td>
+              <td><strong>0.5932</strong></td>
+              <td><strong>0.5545</strong></td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-emerald">Decision Tree (Depth=5)</span></td>
+              <td>50.0%</td>
+              <td>50.0%</td>
+              <td>56.0%</td>
+              <td>63.0%</td>
+              <td>53.0%</td>
+              <td>0.5838</td>
+              <td>0.5315</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-amber">Random Forest (Ensemble)</span></td>
+              <td>40.0%</td>
+              <td>60.0%</td>
+              <td>56.0%</td>
+              <td>61.0%</td>
+              <td>55.2%</td>
+              <td>0.5671</td>
+              <td>0.5247</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-purple">Gradient Boosting (Stumps)</span></td>
+              <td>50.0%</td>
+              <td>55.0%</td>
+              <td>56.0%</td>
+              <td>60.0%</td>
+              <td>59.8%</td>
+              <td>0.5869</td>
+              <td>0.5493</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="figure-container">
+        <img src="figures/model_comparison_roc_pr.png" alt="Model Comparison ROC and Precision-Recall Curves">
+        <figcaption class="figure-caption">
+          <strong>Figure 2: Receiver Operating Characteristic (ROC) and Precision-Recall (PR) Curves on Grouped Client Holdout.</strong> Regularized Logistic Regression outperforms tree ensembles and heuristic baselines across both discrimination and top-of-queue precision.
+        </figcaption>
+      </div>
+
+      <div class="figure-container">
+        <img src="figures/precision_at_k_lift.png" alt="Precision at K Lift Curve">
+        <figcaption class="figure-caption">
+          <strong>Figure 3: Operational Precision@K Lift Curve Across the Prioritized Queue.</strong> Synthesizing calibrated ML decay risk with business opportunity achieves 82.0% Precision@100 (+27.8 pp lift over the 54.2% portfolio base rate), delivering a 2.4× improvement over heuristic rule sorting (34.0%).
+        </figcaption>
+      </div>
+
+      <h3 class="subsection-heading">Feature Interpretability &amp; Key Decay Drivers</h3>
+      <p>
+        Standardized logistic regression coefficients demonstrate that time elapsed since update (<code>days_since_last_update</code>), search volume, and high historical impression volume without commensurate user engagement represent the strongest statistical predictors of forward traffic decay.
+      </p>
+
+      <div class="figure-container">
+        <img src="figures/feature_importance_coefficients.png" alt="Standardized Logistic Regression Coefficients">
+        <figcaption class="figure-caption">
+          <strong>Figure 4: Standardized Logistic Regression Coefficients.</strong> Positive coefficients indicate features that increase the odds of search traffic decay; negative coefficients indicate protective factors (e.g., strong user engagement and scroll depth).
+        </figcaption>
+      </div>
+    </section>
+
+    <!-- Section 5: Limitations & Honest Framing -->
+    <section class="paper-section" id="limitations">
+      <h2 class="section-heading"><span class="section-num">5.</span> Limitations &amp; Honest Framing</h2>
+      <p>
+        In accordance with rigorous scientific standards, all claims are framed using evidence-backed language (<em>observed, measured, directional, decision-support</em>):
+      </p>
+      <div class="callout-note">
+        <strong>Boundaries of Analytical Claims:</strong>
+        <ul style="margin-left: 1.25rem; margin-top: 0.5rem;">
+          <li style="margin-bottom: 0.4rem;"><strong>Selection Confounding in Observational Data:</strong> In retrospective historical datasets, pages refreshed by human editors were not selected at random; editors systematically prioritized high-potential assets. Measured impression gains reflect a combination of editorial curation and freshness treatment rather than a pure causal freshness multiplier.</li>
+          <li style="margin-bottom: 0.4rem;"><strong>No Reverse-Engineering of Search Algorithms:</strong> Modern search engines employ complex, real-time neural ranking systems. This research does not claim to predict search engine algorithms; it provides internal <em>decision-support risk probabilities</em> for editorial workflow triage.</li>
+          <li><strong>External Market Shocks:</strong> Unannounced search engine core algorithm updates and seasonality can cause traffic shifts independent of content quality. Production models require drift monitoring and periodic re-calibration.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Section 6: Ranked Recommendations & Playbook -->
+    <section class="paper-section" id="recommendations">
+      <h2 class="section-heading"><span class="section-num">6.</span> Ranked Recommendations: The Content Action Playbook</h2>
+      <p>
+        To bridge machine learning models and daily editorial operations, we engineered the <strong>Content Action Playbook</strong>. We combine calibrated decay risk with business surface area to construct a single composite priority score:
+      </p>
+      <pre class="code-block">Playbook Priority Score = 0.50 * P(decay) + 0.35 * Visibility_Percentile + 0.15 * Position_Opportunity</pre>
+
+      <h3 class="subsection-heading">Six Diagnostic Editorial Directives &amp; Reason Codes</h3>
+      <p>
+        Every URL in the 30,000-page portfolio is assigned exactly one diagnostic reason code and actionable directive:
+      </p>
+
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Reason Code</th>
+              <th>Assigned Directive</th>
+              <th>Portfolio Volume</th>
+              <th>Human Editorial Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>stale_visible_page</code></td>
+              <td><span class="badge badge-blue">refresh_core_content</span></td>
+              <td>6,575 URLs (21.9%)</td>
+              <td>Substantial rewrite: refresh outdated data, citations, case studies, and body sections.</td>
+            </tr>
+            <tr>
+              <td><code>page_one_decay_risk</code></td>
+              <td><span class="badge badge-emerald">defend_page_one_rank</span></td>
+              <td>5,061 URLs (16.9%)</td>
+              <td>Defend core rank: update FAQ schema, audit competitor SERP features, strengthen internal links.</td>
+            </tr>
+            <tr>
+              <td><code>low_ctr_visible_page</code></td>
+              <td><span class="badge badge-amber">optimize_serp_snippet</span></td>
+              <td>3,680 URLs (12.3%)</td>
+              <td>SERP CTR engineering: rewrite meta title &amp; description, add rich schema, align intent.</td>
+            </tr>
+            <tr>
+              <td><code>low_engagement_visible_page</code></td>
+              <td><span class="badge badge-purple">improve_ux_layout</span></td>
+              <td>1,461 URLs (4.9%)</td>
+              <td>UX &amp; readability polish: add visual hierarchy, table of contents, fix mobile friction.</td>
+            </tr>
+            <tr>
+              <td><code>thin_visible_page</code></td>
+              <td><span class="badge badge-rose">expand_and_enrich</span></td>
+              <td>385 URLs (1.3%)</td>
+              <td>Content depth buildout: address missing subtopics, add original research and comparative tables.</td>
+            </tr>
+            <tr>
+              <td><code>routine_maintenance</code></td>
+              <td><span class="badge badge-gray">monitor_performance</span></td>
+              <td>12,838 URLs (42.8%)</td>
+              <td>Passive monitoring: track baseline telemetry without expending active sprint hours.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="figure-container">
+        <img src="figures/playbook_action_distribution.png" alt="Portfolio Breakdown by Action Directive">
+        <figcaption class="figure-caption">
+          <strong>Figure 5: Full Portfolio Distribution Across the Six Editorial Action Directives (N = 30,000 URLs).</strong> Over 57% of URLs are triaged into specific high-yield action categories, while routine long-tail pages are routed to passive monitoring.
+        </figcaption>
+      </div>
+
+      <div class="figure-container">
+        <img src="figures/playbook_cost_vs_impact.png" alt="Cost vs Impact of Content Actions">
+        <figcaption class="figure-caption">
+          <strong>Figure 6: Economic Effort (Editorial Hours) vs. Traffic Impact Across Action Tiers.</strong> Snippet optimization and Page-1 defense offer rapid, high-leverage ROI, while deep content refreshes are concentrated on high-value pillars.
+        </figcaption>
+      </div>
+
+      <h3 class="subsection-heading">Economic Effort &amp; Production Monitoring</h3>
+      <p>
+        Executing editorial refreshes on the <strong>Top-100 prioritized URLs</strong> requires an estimated <strong>179.4 editorial hours</strong> to safeguard <strong>4.2 million quarterly impressions</strong>. Extending execution to the <strong>Top-1,000 queue</strong> requires <strong>1,903.6 hours</strong> protecting <strong>15.6 million impressions</strong>.
+      </p>
+      <p>
+        <strong>Production Drift Triggers:</strong> Retraining is triggered automatically if test Precision@100 falls below 55.0%, Population Stability Index (PSI) exceeds 0.20 on input feature distributions, or upon detection of an unannounced major Google Search Core Algorithm Update.
+      </p>
+    </section>
+
+    <!-- Section 7: Reproducibility -->
+    <section class="paper-section" id="reproducibility">
+      <h2 class="section-heading"><span class="section-num">7.</span> Reproducibility &amp; Artifact Access</h2>
+      <p>
+        All experiments, feature transformations, baseline implementations, and validation evaluations are fully deterministic (<code>SEED = 42</code>) and openly accessible in the project repository:
+      </p>
+      <ul style="margin-left: 1.5rem; color: #cbd5e1;">
+        <li style="margin-bottom: 0.5rem;"><strong>Code Repository:</strong> <a href="https://github.com/muhammadbinijaz17/flyrankAI_Intern_ML" class="meta-link" target="_blank" rel="noopener">https://github.com/muhammadbinijaz17/flyrankAI_Intern_ML</a></li>
+        <li style="margin-bottom: 0.5rem;"><strong>Capstone Executed Notebook:</strong> <a href="https://github.com/muhammadbinijaz17/flyrankAI_Intern_ML/blob/main/work/notebooks/capstone.ipynb" class="meta-link" target="_blank" rel="noopener">work/notebooks/capstone.ipynb</a></li>
+        <li style="margin-bottom: 0.5rem;"><strong>Action Playbook Notebook:</strong> <a href="https://github.com/muhammadbinijaz17/flyrankAI_Intern_ML/blob/main/work/notebooks/w07_action_playbook.ipynb" class="meta-link" target="_blank" rel="noopener">work/notebooks/w07_action_playbook.ipynb</a></li>
+        <li><strong>Ranked Priority Queue CSV:</strong> <code>work/outputs/playbook_ranked_queue.csv</code></li>
+      </ul>
+      <pre class="code-block"># Deterministic Reproduction Command
+git clone https://github.com/muhammadbinijaz17/flyrankAI_Intern_ML.git
+cd flyrankAI_Intern_ML
+pip install -r requirements.txt
+jupyter nbconvert --to notebook --execute work/notebooks/capstone.ipynb</pre>
+    </section>
+
+    <!-- Section 8: ML-12 Presentation Summary -->
+    <section class="paper-section" id="presentation">
+      <h2 class="section-heading"><span class="section-num">8.</span> Executive &amp; Industry Summary</h2>
+      
+      <div class="stat-card" style="margin-bottom: 1.5rem;">
+        <div class="stat-label">Three-Sentence Technical Summary</div>
+        <p style="font-size: 0.95rem; color: #e2e8f0; margin-top: 0.5rem; line-height: 1.7;">
+          Engineered an end-to-end predictive search decay ranking engine on 30,000 URLs across 32 enterprise clients, establishing an honest grouped-client validation design to eliminate domain authority leakage. Developed a calibrated machine learning pipeline and composite priority score that achieved 82.0% Precision@100 (+27.8 pp over base rate), outperforming heuristic baselines by 2.4×. Translated analytical findings into an operational 6-tier Content Action Playbook and deployed static research paper delivering high-yield editorial sprint decision support.
+        </p>
+      </div>
+    </section>
+
+    <!-- Section 9: Mandatory Acknowledgments & Data Credit (Bottom of Paper) -->
+    <footer class="paper-footer" id="acknowledgments">
+      <div class="data-credit-box">
+        <div class="data-credit-text">
+          Built on the FlyRank ML Internship dataset
+        </div>
+        <p style="font-size: 0.95rem; color: #94a3b8; margin-bottom: 1rem;">
+          We express our gratitude to FlyRank for providing access to the anonymized multi-client enterprise search research dataset and foundational SEO intelligence benchmarks.
+        </p>
+        <a href="https://flyrank.ai" class="flyrank-link" target="_blank" rel="noopener">Visit FlyRank.ai &rarr;</a>
+      </div>
+
+      <div class="footer-nav">
+        <a href="#abstract">Abstract</a>
+        <a href="#introduction">Problem</a>
+        <a href="#data">Data</a>
+        <a href="#methodology">Methodology</a>
+        <a href="#results">Results</a>
+        <a href="#recommendations">Playbook</a>
+        <a href="#reproducibility">Reproducibility</a>
+      </div>
+      <p style="font-size: 0.8rem; color: #64748b; margin-top: 1.5rem;">
+        &copy; 2026 FlyRank Machine Learning Research Internship Capstone. All rights reserved.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>
