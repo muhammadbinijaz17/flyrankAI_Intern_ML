@@ -1,0 +1,68 @@
+{
+  "evaluation_split": "grouped_client_holdout_20pct",
+  "holdout_client_count": 6,
+  "holdout_row_count": 4367,
+  "test_base_rate": 0.4738,
+  "comparison_metrics": [
+    {
+      "Model / Baseline": "Naive Base Rate (Chance)",
+      "P@10": 0.4737806274330204,
+      "P@20": 0.4737806274330204,
+      "P@50": 0.4737806274330204,
+      "P@100": 0.4737806274330204,
+      "P@500": 0.4737806274330204,
+      "ROC-AUC": 0.5,
+      "PR-AUC": 0.4737806274330204
+    },
+    {
+      "Model / Baseline": "W04 Heuristic Baseline",
+      "P@10": 0.2,
+      "P@20": 0.3,
+      "P@50": 0.28,
+      "P@100": 0.34,
+      "P@500": 0.314,
+      "ROC-AUC": 0.47974377029892556,
+      "PR-AUC": 0.43602514157427297
+    },
+    {
+      "Model / Baseline": "Logistic Regression (Linear)",
+      "P@10": 0.6,
+      "P@20": 0.75,
+      "P@50": 0.66,
+      "P@100": 0.65,
+      "P@500": 0.594,
+      "ROC-AUC": 0.5931757751818149,
+      "PR-AUC": 0.554540072030139
+    },
+    {
+      "Model / Baseline": "Decision Tree (Depth=5)",
+      "P@10": 0.5,
+      "P@20": 0.5,
+      "P@50": 0.56,
+      "P@100": 0.63,
+      "P@500": 0.53,
+      "ROC-AUC": 0.5838397942859931,
+      "PR-AUC": 0.5314812822330592
+    },
+    {
+      "Model / Baseline": "Random Forest (Ensemble)",
+      "P@10": 0.4,
+      "P@20": 0.6,
+      "P@50": 0.56,
+      "P@100": 0.61,
+      "P@500": 0.552,
+      "ROC-AUC": 0.5670911432009931,
+      "PR-AUC": 0.5246847296369231
+    },
+    {
+      "Model / Baseline": "Gradient Boosting (Stumps)",
+      "P@10": 0.5,
+      "P@20": 0.55,
+      "P@50": 0.56,
+      "P@100": 0.6,
+      "P@500": 0.598,
+      "ROC-AUC": 0.5869334546483986,
+      "PR-AUC": 0.5493351684737617
+    }
+  ]
+}
