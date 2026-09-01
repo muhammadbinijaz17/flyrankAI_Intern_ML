@@ -1,0 +1,48 @@
+{
+  "playbook_metadata": {
+    "version": "1.0",
+    "date": "2026-09-01",
+    "assignment": "ML-10 Content Action Playbook",
+    "portfolio_size": 30000,
+    "client_count": 32,
+    "overall_base_rate": 0.5421
+  },
+  "precision_at_k": {
+    "P@10": 0.8,
+    "P@20": 0.6,
+    "P@50": 0.78,
+    "P@100": 0.82,
+    "P@500": 0.76,
+    "P@1000": 0.737
+  },
+  "action_distribution": {
+    "optimize_serp_snippet": 3680,
+    "defend_page_one_rank": 5061,
+    "improve_ux_layout": 1461,
+    "refresh_core_content": 6575,
+    "expand_and_enrich": 385,
+    "monitor_performance": 12838
+  },
+  "economic_estimates": {
+    "top_100_effort_hours": 179.4,
+    "top_500_effort_hours": 943.5,
+    "top_1000_effort_hours": 1903.6,
+    "top_1000_impressions_covered": 15602071
+  },
+  "retrain_triggers": {
+    "precision_threshold": 0.55,
+    "psi_drift_threshold": 0.2,
+    "calendar_cadence_days": 90,
+    "external_shock_events": [
+      "Google Core Update",
+      "Helpful Content Update"
+    ]
+  },
+  "exported_receipts": [
+    "work/outputs/playbook_ranked_queue.csv",
+    "work/figures/playbook_action_distribution.png",
+    "work/figures/playbook_cost_vs_impact.png",
+    "work/figures/playbook_decay_by_freshness.png",
+    "work/outputs/playbook_summary_metrics.json"
+  ]
+}
