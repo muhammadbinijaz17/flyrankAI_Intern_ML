@@ -1,0 +1,30 @@
+{
+  "audit_date": "2026-09-01",
+  "assignment": "ML-09 Validation and Research Claim Audit",
+  "evidence_register": [
+    {
+      "Claim Area": "Model Prioritization Lift",
+      "Key Term Used": "decision-support / measured",
+      "Empirical Evidence": "Precision@20 on unseen clients = 75.0% vs. Base Rate = 47.4% (+27.6 pts)",
+      "Validation Receipt": "w06_honest_split_comparison.json"
+    },
+    {
+      "Claim Area": "Split Gap Integrity",
+      "Key Term Used": "observed / measured",
+      "Empirical Evidence": "Random Split ROC-AUC = 0.7669 vs. Grouped Split ROC-AUC = 0.5671 (Gap = 0.1998)",
+      "Validation Receipt": "w06_honest_split_comparison.json"
+    },
+    {
+      "Claim Area": "Freshness Association",
+      "Key Term Used": "observed / directional",
+      "Empirical Evidence": "365+ day content refreshed in last 30d has mean 4,039 imp vs 71 imp for stale (selection-confounded)",
+      "Validation Receipt": "content_refresh_anonymized.csv (Table 1)"
+    }
+  ],
+  "vocabulary_check": {
+    "observed": true,
+    "measured": true,
+    "directional": true,
+    "decision-support": true
+  }
+}
