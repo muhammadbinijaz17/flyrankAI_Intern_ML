@@ -376,15 +376,45 @@ pip install -r requirements.txt
 jupyter nbconvert --to notebook --execute work/notebooks/capstone.ipynb</pre>
     </section>
 
-    <!-- Section 8: ML-12 Presentation Summary -->
+    <!-- Section 8: ML-12 Presentation & Shareable Toolkit -->
     <section class="paper-section" id="presentation">
-      <h2 class="section-heading"><span class="section-num">8.</span> Executive &amp; Industry Summary</h2>
+      <h2 class="section-heading"><span class="section-num">8.</span> Executive &amp; Presentation Toolkit</h2>
       
+      <!-- 5-Minute Demo Outline -->
+      <h3 class="subsection-heading">5-Minute Stakeholder Demo Outline</h3>
       <div class="stat-card" style="margin-bottom: 1.5rem;">
-        <div class="stat-label">Three-Sentence Technical Summary</div>
-        <p style="font-size: 0.95rem; color: #e2e8f0; margin-top: 0.5rem; line-height: 1.7;">
-          Engineered an end-to-end predictive search decay ranking engine on 30,000 URLs across 32 enterprise clients, establishing an honest grouped-client validation design to eliminate domain authority leakage. Developed a calibrated machine learning pipeline and composite priority score that achieved 82.0% Precision@100 (+27.8 pp over base rate), outperforming heuristic baselines by 2.4×. Translated analytical findings into an operational 6-tier Content Action Playbook and deployed static research paper delivering high-yield editorial sprint decision support.
-        </p>
+        <ol style="margin-left: 1.5rem; color: #cbd5e1; line-height: 1.8;">
+          <li style="margin-bottom: 0.6rem;"><strong>Question:</strong> In multi-thousand URL enterprise organic search portfolios, editorial bandwidth is strictly constrained to ~100 page refreshes per month out of 30,000+ indexed pages. How can search teams systematically identify and prioritize which decaying high-value URLs to refresh before irreversible search visibility loss occurs?</li>
+          <li style="margin-bottom: 0.6rem;"><strong>Method:</strong> We engineered leak-free pre-outcome behavioral features, enforced a strict 20% grouped client holdout split to eliminate cross-domain authority leakage, and benchmarked calibrated logistic regression, decision trees, and ensemble classifiers against an industry-standard heuristic editorial baseline.</li>
+          <li style="margin-bottom: 0.6rem;"><strong>One Chart:</strong> <code>work/figures/precision_at_k_lift.png</code> (Figure 2) — Demonstrates that the machine learning Playbook Priority Queue maintains &gt;82% precision in top queues, beating the heuristic baseline (34.0%) and the portfolio base rate (54.2%).</li>
+          <li style="margin-bottom: 0.6rem;"><strong>One Honest Result:</strong> On unseen enterprise client domains, calibrated logistic regression achieved an <em>observed</em> holdout Precision@100 of 82.0% (ROC-AUC: 0.5932, PR-AUC: 0.5545), representing a <em>directional</em> +27.8 percentage point lift over base rate and a 2.4&times; improvement over heuristic rule scoring.</li>
+          <li><strong>One Recommendation:</strong> Deploy the 6-tier Content Action Playbook combining ML decay risk with business visibility into a unified priority score (<code>playbook_priority_score</code>) and explicit diagnostic reason codes (e.g., <code>defend_page_one_rank</code>, <code>refresh_core_content</code>, <code>optimize_serp_snippet</code>), focusing 179 editorial sprint hours to safeguard 4.2M quarterly impressions in the top-100 queue.</li>
+        </ol>
+      </div>
+
+      <!-- Shareable Summaries -->
+      <h3 class="subsection-heading">Shareable Summaries &amp; Cuts</h3>
+      <div class="grid-2">
+        <div class="stat-card">
+          <div class="stat-label">Short Social Post</div>
+          <p style="font-size: 0.9rem; color: #cbd5e1; margin-top: 0.5rem; line-height: 1.6;">
+            <strong>🚀 Shipped: ML-Guided Content Refresh in Enterprise SEO</strong><br><br>
+            In 30,000-URL portfolios, editorial teams waste hundreds of hours rewriting stagnant pages while Page-1 pillars decay unnoticed.<br><br>
+            In our latest research with <strong>FlyRank</strong>, we built a leak-free ML decay ranking engine with rigorous grouped-client holdout validation:<br>
+            &bull; <strong>Rigor:</strong> Quarantined forward-looking fields and enforced zero-overlap client domain splits.<br>
+            &bull; <strong>Finding:</strong> Calibrated Logistic Regression delivers <strong>82.0% Precision@100</strong> (+27.8 pp over base rate), beating heuristic rules by <strong>2.4&times;</strong>.<br>
+            &bull; <strong>Action:</strong> Automated 6-tier playbook assigns diagnostic reason codes (<code>defend_page_one_rank</code>, <code>refresh_core_content</code>) protecting 4.2M impressions.<br><br>
+            <em>Built on the FlyRank ML Internship dataset.</em>
+          </p>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Three-Sentence Employer Summary</div>
+          <div style="font-size: 0.9rem; color: #cbd5e1; margin-top: 0.5rem; line-height: 1.7;">
+            <p style="margin-bottom: 0.5rem;"><strong>1. What I built:</strong> Engineered an end-to-end predictive search decay ranking engine and an operational 6-tier Content Action Playbook that prioritizes high-yield editorial refresh interventions in enterprise search portfolios.</p>
+            <p style="margin-bottom: 0.5rem;"><strong>2. On what data:</strong> Trained, audited, and validated models on a public-safe FlyRank ML dataset of 30,000 URLs across 32 enterprise client domains using strict temporal windowing and zero-leakage grouped client holdouts.</p>
+            <p><strong>3. What it showed:</strong> Demonstrated that calibrated logistic regression achieves an observed 82.0% Precision@100 (+27.8 percentage points above the 54.2% portfolio base rate), outperforming industry heuristic baselines by 2.4&times; and enabling editorial teams to protect 4.2M quarterly impressions in 179 sprint hours.</p>
+          </div>
+        </div>
       </div>
     </section>
 
